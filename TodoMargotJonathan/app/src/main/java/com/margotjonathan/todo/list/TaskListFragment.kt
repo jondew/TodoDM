@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.margotjonathan.todo.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -20,6 +21,7 @@ private const val ARG_PARAM2 = "param2"
 class TaskListFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var taskList = listOf("Task 1", "Task 2", "Task 3")
+    private val adapter = TaskListAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +37,8 @@ class TaskListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_task_list, container, false)
+        adapter.currentList = taskList
+        val recyclerView = view.findViewById<RecyclerView>(R.id.task_recycler_view)
         return rootView
     }
 
