@@ -38,7 +38,7 @@ class TaskListFragment : Fragment() {
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_task_list, container, false)
         adapter.currentList = taskList
-        val recyclerView = view.findViewById<RecyclerView>(R.id.task_recycler_view)
+        val recyclerView = view?.findViewById<RecyclerView>(R.id.task_recycler_view)
         return rootView
     }
 
