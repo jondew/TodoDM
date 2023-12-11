@@ -13,7 +13,7 @@ class TaskListAdapter : RecyclerView.Adapter<TaskListAdapter.TaskViewHolder>() {
 
     // on utilise `inner` ici afin d'avoir accès aux propriétés de l'adapter directement
     inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val textView: TextView = itemView.findViewById(R.layout.item_task)
+        private val textView: TextView = itemView.findViewById(R.id.task_title)
         fun bind(taskTitle: String) {
             textView.text = taskTitle
         }

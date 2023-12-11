@@ -10,8 +10,8 @@ import com.margotjonathan.todo.R
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val ARG_PARAM1 = "taskList"
+private const val ARG_PARAM2 = "adapter"
 
 /**
  * A simple [Fragment] subclass.
@@ -25,10 +25,10 @@ class TaskListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
+        /*arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
-        }
+        }*/
     }
 
     override fun onCreateView(
