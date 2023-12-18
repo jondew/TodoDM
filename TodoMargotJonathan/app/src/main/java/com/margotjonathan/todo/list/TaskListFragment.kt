@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.margotjonathan.todo.R
 
@@ -37,8 +38,10 @@ class TaskListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_task_list, container, false)
+        val recyclerView = rootView.findViewById<RecyclerView>(R.id.task_recycler_view)
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = adapter
         adapter.currentList = taskList
-        val recyclerView = view?.findViewById<RecyclerView>(R.id.task_recycler_view)
         return rootView
     }
 
