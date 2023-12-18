@@ -21,7 +21,11 @@ private const val ARG_PARAM2 = "adapter"
  */
 class TaskListFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private var taskList = listOf("Task 1", "Task 2", "Task 3")
+    private var taskList = listOf(
+        Task(id = "id_1", title = "Task 1", description = "description 1"),
+        Task(id = "id_2", title = "Task 2"),
+        Task(id = "id_3", title = "Task 3")
+    )
     private val adapter = TaskListAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {

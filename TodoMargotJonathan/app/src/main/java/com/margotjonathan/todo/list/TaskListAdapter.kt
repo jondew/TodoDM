@@ -9,13 +9,15 @@ import com.margotjonathan.todo.R
 
 class TaskListAdapter : RecyclerView.Adapter<TaskListAdapter.TaskViewHolder>() {
 
-    var currentList: List<String> = emptyList()
+    var currentList: List<Task> = emptyList()
 
     // on utilise `inner` ici afin d'avoir accès aux propriétés de l'adapter directement
     inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val textView = itemView.findViewById<TextView>(R.id.task_title)
-        fun bind(taskTitle: String) {
-            textView.text = taskTitle
+        private val descriptionTextView = itemView.findViewById<TextView>(R.id.task_description)
+        fun bind(task: Task) {
+            textView.text = task.title
+            descriptionTextView.text = task.description
         }
     }
 
