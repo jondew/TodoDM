@@ -57,6 +57,14 @@ class TaskListFragment : Fragment() {
         return rootView
     }
 
+    private fun addTask(newTask: Task) {
+        // Ajouter la nouvelle tâche à la liste
+        taskList = taskList + newTask
+
+        // Actualiser l'adaptateur avec la nouvelle liste
+        adapter.submitList(taskList)
+    }
+
     companion object {
         /**
          * Use this factory method to create a new instance of
