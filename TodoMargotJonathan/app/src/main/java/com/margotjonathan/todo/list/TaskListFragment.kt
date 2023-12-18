@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.margotjonathan.todo.R
+import com.margotjonathan.todo.databinding.FragmentTaskListBinding
 import java.util.UUID
 
 // TODO: Rename parameter arguments, choose names that match
@@ -44,19 +45,19 @@ class TaskListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_task_list, container, false)
-        val recyclerView = rootView.findViewById<RecyclerView>(R.id.task_recycler_view)
+        val binding = FragmentTaskListBinding.inflate(inflater)
+        val recyclerView = binding.taskRecyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
         adapter.submitList(taskList)
 
-        val addTaskButton = rootView.findViewById<FloatingActionButton>(R.id.add_task_button)
+        val addTaskButton = binding.addTaskButton
         addTaskButton.setOnClickListener {
             val newTask = Task(id = UUID.randomUUID().toString(), title = "Task ${taskList.size + 1}")
             taskList = taskList + newTask
             adapter.submitList(taskList)
         }
-        return rootView
+        return binding.root
     }
 
     companion object {
