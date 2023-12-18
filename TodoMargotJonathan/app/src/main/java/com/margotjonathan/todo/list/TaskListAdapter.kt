@@ -3,13 +3,23 @@ package com.margotjonathan.todo.list
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.margotjonathan.todo.R
 
-class TaskListAdapter : RecyclerView.Adapter<TaskListAdapter.TaskViewHolder>() {
+object MyTasksDiffCallback : DiffUtil.ItemCallback<Task>() {
+    override fun areItemsTheSame(oldTask: Task, newTask: Task) : Boolean {
+        return newTask.id == oldTask.id;
+    }
 
-    var currentList: List<Task> = emptyList()
+    override fun areContentsTheSame(oldTask: Task, newTask: Task) : Boolean {
+        return newTask.title == oldTask.title && newTask.description == oldTask.description;
+    }
+}
+
+class TaskListAdapter : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(MyTasksDiffCallback) {
 
     // on utilise `inner` ici afin d'avoir accès aux propriétés de l'adapter directement
     inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -24,10 +34,6 @@ class TaskListAdapter : RecyclerView.Adapter<TaskListAdapter.TaskViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_task, parent, false)
         return TaskViewHolder(itemView)
-    }
-
-    override fun getItemCount(): Int {
-        return currentList.size
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
