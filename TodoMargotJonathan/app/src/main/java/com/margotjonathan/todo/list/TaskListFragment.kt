@@ -5,9 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.margotjonathan.todo.R
+import java.util.UUID
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -46,6 +48,12 @@ class TaskListFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
         adapter.currentList = taskList
+
+        val addTaskButton: Button = rootView.findViewById(R.id.add_task_button)
+        addTaskButton.setOnClickListener {
+            val newTask = Task(id = UUID.randomUUID().toString(), title = "Task ${taskList.size + 1}")
+            taskList = taskList + newTask
+        }
         return rootView
     }
 
