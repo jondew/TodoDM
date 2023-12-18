@@ -8,6 +8,7 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.margotjonathan.todo.R
 import java.util.UUID
 
@@ -49,20 +50,13 @@ class TaskListFragment : Fragment() {
         recyclerView.adapter = adapter
         adapter.submitList(taskList)
 
-        //val addTaskButton = rootView.findViewById<Button>(R.id.add_task_button)
-        /*addTaskButton.setOnClickListener {
+        val addTaskButton = rootView.findViewById<FloatingActionButton>(R.id.add_task_button)
+        addTaskButton.setOnClickListener {
             val newTask = Task(id = UUID.randomUUID().toString(), title = "Task ${taskList.size + 1}")
             taskList = taskList + newTask
-        }*/
+            adapter.submitList(taskList)
+        }
         return rootView
-    }
-
-    private fun addTask(newTask: Task) {
-        // Ajouter la nouvelle tâche à la liste
-        taskList = taskList + newTask
-
-        // Actualiser l'adaptateur avec la nouvelle liste
-        adapter.submitList(taskList)
     }
 
     companion object {
