@@ -57,6 +57,11 @@ class TaskListFragment : Fragment() {
             taskList = taskList + newTask
             adapter.submitList(taskList)
         }
+
+        adapter.onClickDelete = { task ->
+            taskList = taskList - task
+            adapter.submitList(taskList)
+        }
         return binding.root
     }
 

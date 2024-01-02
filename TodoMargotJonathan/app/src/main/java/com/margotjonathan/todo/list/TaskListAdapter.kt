@@ -8,7 +8,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.margotjonathan.todo.R
+import com.margotjonathan.todo.databinding.FragmentTaskListBinding
 import com.margotjonathan.todo.databinding.ItemTaskBinding
+import java.util.UUID
 
 object MyTasksDiffCallback : DiffUtil.ItemCallback<Task>() {
     override fun areItemsTheSame(oldTask: Task, newTask: Task) : Boolean {
@@ -26,9 +28,15 @@ class TaskListAdapter : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(MyTask
     inner class TaskViewHolder(binding: ItemTaskBinding) : RecyclerView.ViewHolder(binding.root) {
         private val textView = binding.taskTitle
         private val descriptionTextView = binding.taskDescription
+        private val deleteTaskButton = binding.deleteTaskButton
+
         fun bind(task: Task) {
             textView.text = task.title
             descriptionTextView.text = task.description
+
+            deleteTaskButton.setOnClickListener {
+                onClickDelete(task)
+            }
         }
     }
 
@@ -40,4 +48,6 @@ class TaskListAdapter : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(MyTask
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         holder.bind(currentList[position])
     }
+
+    var onClickDelete: (Task) -> Unit = {}
 }
