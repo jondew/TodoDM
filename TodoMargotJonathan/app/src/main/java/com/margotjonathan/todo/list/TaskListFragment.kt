@@ -80,6 +80,11 @@ class TaskListFragment : Fragment() {
         }*/
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable("taskList", ArrayList(taskList))
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -95,6 +100,11 @@ class TaskListFragment : Fragment() {
         addTaskButton.setOnClickListener {
             val intent = Intent(context, DetailActivity::class.java)
             createTask.launch(intent)
+        }
+
+        if (savedInstanceState != null && savedInstanceState.containsKey("taskList")){
+            taskList = savedInstanceState.getSerializable("taskList") as ArrayList<Task>
+            adapter.submitList(taskList)
         }
 
         return binding.root
