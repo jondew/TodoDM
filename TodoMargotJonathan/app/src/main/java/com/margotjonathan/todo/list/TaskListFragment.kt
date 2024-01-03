@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,6 +34,12 @@ class TaskListFragment : Fragment() {
         Task(id = "id_3", title = "Task 3")
     )
     private val adapter = TaskListAdapter()
+    private val createTask = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        // dans cette callback on récupèrera la task et on l'ajoutera à la liste
+        val newTask = Task(id = UUID.randomUUID().toString(), title = "Task ${taskList.size + 1}")
+        taskList = taskList + newTask
+        adapter.submitList(taskList)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,11 +62,8 @@ class TaskListFragment : Fragment() {
 
         val addTaskButton = binding.addTaskButton
         addTaskButton.setOnClickListener {
-            val newTask = Task(id = UUID.randomUUID().toString(), title = "Task ${taskList.size + 1}")
-            taskList = taskList + newTask
-            adapter.submitList(taskList)
             val intent = Intent(context, DetailActivity::class.java)
-            startActivity(intent)
+            createTask.launch(intent)
         }
 
         adapter.onClickDelete = { task ->
