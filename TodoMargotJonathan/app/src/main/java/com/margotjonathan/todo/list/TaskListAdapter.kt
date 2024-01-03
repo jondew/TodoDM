@@ -29,13 +29,16 @@ class TaskListAdapter : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(MyTask
         private val textView = binding.taskTitle
         private val descriptionTextView = binding.taskDescription
         private val deleteTaskButton = binding.deleteTaskButton
+        private val editTaskButton = binding.editTaskButton
 
         fun bind(task: Task) {
             textView.text = task.title
             descriptionTextView.text = task.description
-
             deleteTaskButton.setOnClickListener {
                 onClickDelete(task)
+            }
+            editTaskButton.setOnClickListener {
+                onClickEdit(task)
             }
         }
     }
@@ -50,4 +53,5 @@ class TaskListAdapter : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(MyTask
     }
 
     var onClickDelete: (Task) -> Unit = {}
+    var onClickEdit: (Task) -> Unit = {}
 }

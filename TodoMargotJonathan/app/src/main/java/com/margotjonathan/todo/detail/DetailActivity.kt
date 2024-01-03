@@ -30,6 +30,7 @@ class DetailActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val initialTask = intent?.getSerializableExtra("task") as Task?
         val onValidate: (Task) -> Unit = { newTask ->
             intent.putExtra("task", newTask)
             setResult(RESULT_OK, intent)
@@ -42,7 +43,7 @@ class DetailActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Detail(onValidate)
+                    Detail(initialTask, onValidate)
                 }
             }
         }
@@ -50,7 +51,7 @@ class DetailActivity : ComponentActivity() {
 }
 
 @Composable
-fun Detail(onValidate: (Task) -> Unit, modifier: Modifier = Modifier) {
+fun Detail(initialTask: Task?, onValidate: (Task) -> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier = Modifier
             .padding(16.dp),
@@ -62,7 +63,8 @@ fun Detail(onValidate: (Task) -> Unit, modifier: Modifier = Modifier) {
             modifier = modifier,
             style = MaterialTheme.typography.headlineLarge
         )
-        var task by remember { mutableStateOf(Task(id = UUID.randomUUID().toString(), title = "", description = "")) }
+        val newTask = Task(id = UUID.randomUUID().toString(), title = "", description = "")
+        var task by remember { mutableStateOf(initialTask ?: newTask) }
         OutlinedTextField(
             value = task.title,
             onValueChange = { task = task.copy(title = it) },
@@ -86,6 +88,6 @@ fun Detail(onValidate: (Task) -> Unit, modifier: Modifier = Modifier) {
 @Composable
 fun DetailPreview() {
     TodoMargotJonathanTheme {
-        Detail(onValidate = {})
+        Detail(initialTask = null, onValidate = {})
     }
 }

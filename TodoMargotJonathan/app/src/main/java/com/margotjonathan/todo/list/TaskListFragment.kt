@@ -43,6 +43,13 @@ class TaskListFragment : Fragment() {
             adapter.submitList(taskList)
         }
     }
+    private val editTask = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val task = result.data?.getSerializableExtra("task") as Task?
+        if (task != null) {
+            taskList = taskList.map { if (it.id == task.id) task else it }
+            adapter.submitList(taskList)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +79,12 @@ class TaskListFragment : Fragment() {
         adapter.onClickDelete = { task ->
             taskList = taskList - task
             adapter.submitList(taskList)
+        }
+
+        adapter.onClickEdit = { task ->
+            val intent = Intent(context, DetailActivity::class.java)
+            intent.putExtra("task", task)
+            editTask.launch(intent)
         }
         return binding.root
     }
