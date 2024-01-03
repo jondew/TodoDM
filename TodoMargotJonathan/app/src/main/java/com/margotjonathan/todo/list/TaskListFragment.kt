@@ -15,6 +15,7 @@ import com.margotjonathan.todo.R
 import com.margotjonathan.todo.databinding.FragmentTaskListBinding
 import com.margotjonathan.todo.detail.DetailActivity
 import java.util.UUID
+import kotlin.reflect.typeOf
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -36,9 +37,11 @@ class TaskListFragment : Fragment() {
     private val adapter = TaskListAdapter()
     private val createTask = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         // dans cette callback on récupèrera la task et on l'ajoutera à la liste
-        val newTask = Task(id = UUID.randomUUID().toString(), title = "Task ${taskList.size + 1}")
-        taskList = taskList + newTask
-        adapter.submitList(taskList)
+        val task = result.data?.getSerializableExtra("task") as Task?
+        if (task != null) {
+            taskList = taskList + task
+            adapter.submitList(taskList)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
