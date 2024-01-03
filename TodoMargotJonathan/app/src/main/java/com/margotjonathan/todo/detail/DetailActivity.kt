@@ -62,21 +62,18 @@ fun Detail(onValidate: (Task) -> Unit, modifier: Modifier = Modifier) {
             modifier = modifier,
             style = MaterialTheme.typography.headlineLarge
         )
-        var title = ""
+        var task by remember { mutableStateOf(Task(id = UUID.randomUUID().toString(), title = "", description = "")) }
         OutlinedTextField(
-            value = title,
-            onValueChange = { title = it },
+            value = task.title,
+            onValueChange = { task = task.copy(title = it) },
             label = { Text("Title") }
         )
-        var description = ""
         OutlinedTextField(
-            value = description,
-            onValueChange = { description = it },
+            value = task.description,
+            onValueChange = { task = task.copy(description = it) },
             label = { Text("Description") }
         )
-        var task by remember { mutableStateOf(Task(id = UUID.randomUUID().toString(), title = title, description = description)) }
         Button(onClick = {
-            task = task.copy(title = "new title")
             onValidate(task)
         })
         {
