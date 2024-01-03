@@ -22,7 +22,7 @@ object MyTasksDiffCallback : DiffUtil.ItemCallback<Task>() {
     }
 }
 
-class TaskListAdapter : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(MyTasksDiffCallback) {
+class TaskListAdapter(val listener: TaskListListener) : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(MyTasksDiffCallback) {
 
     // on utilise `inner` ici afin d'avoir accès aux propriétés de l'adapter directement
     inner class TaskViewHolder(binding: ItemTaskBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -35,10 +35,10 @@ class TaskListAdapter : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(MyTask
             textView.text = task.title
             descriptionTextView.text = task.description
             deleteTaskButton.setOnClickListener {
-                onClickDelete(task)
+                listener.onClickDelete(task)
             }
             editTaskButton.setOnClickListener {
-                onClickEdit(task)
+                listener.onClickEdit(task)
             }
         }
     }
@@ -51,7 +51,4 @@ class TaskListAdapter : ListAdapter<Task, TaskListAdapter.TaskViewHolder>(MyTask
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         holder.bind(currentList[position])
     }
-
-    var onClickDelete: (Task) -> Unit = {}
-    var onClickEdit: (Task) -> Unit = {}
 }
