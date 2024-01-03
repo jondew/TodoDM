@@ -44,6 +44,16 @@ class TaskListFragment : Fragment() {
             intent.putExtra("task", task)
             editTask.launch(intent)
         }
+        override fun onLongClickTask(task: Task) {
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, task.title + "\n" + task.description)
+                type = "text/plain"
+            }
+
+            val shareIntent = Intent.createChooser(sendIntent, null)
+            startActivity(shareIntent)
+        }
     }
     private val adapter = TaskListAdapter(adapterListener)
     private val createTask = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->

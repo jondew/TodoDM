@@ -30,7 +30,13 @@ class DetailActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val initialTask = intent?.getSerializableExtra("task") as Task?
+        var initialTask = intent?.getSerializableExtra("task") as Task?
+        if (intent?.action == Intent.ACTION_SEND) {
+            val sharedText = intent.getStringExtra(Intent.EXTRA_TEXT)
+            if (sharedText != null) {
+                initialTask = Task(id = UUID.randomUUID().toString(), title = "", description = sharedText)
+            }
+        }
         val onValidate: (Task) -> Unit = { newTask ->
             intent.putExtra("task", newTask)
             setResult(RESULT_OK, intent)

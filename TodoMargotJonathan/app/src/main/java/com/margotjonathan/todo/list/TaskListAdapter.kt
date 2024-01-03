@@ -30,6 +30,7 @@ class TaskListAdapter(val listener: TaskListListener) : ListAdapter<Task, TaskLi
         private val descriptionTextView = binding.taskDescription
         private val deleteTaskButton = binding.deleteTaskButton
         private val editTaskButton = binding.editTaskButton
+        private val wholeTaskView = binding.root
 
         fun bind(task: Task) {
             textView.text = task.title
@@ -39,6 +40,10 @@ class TaskListAdapter(val listener: TaskListListener) : ListAdapter<Task, TaskLi
             }
             editTaskButton.setOnClickListener {
                 listener.onClickEdit(task)
+            }
+            wholeTaskView.setOnLongClickListener {
+                listener.onLongClickTask(task)
+                true
             }
         }
     }
