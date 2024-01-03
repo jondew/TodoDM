@@ -18,11 +18,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.margotjonathan.todo.detail.ui.theme.TodoMargotJonathanTheme
+import com.margotjonathan.todo.list.Task
+import java.util.UUID
 
 class DetailActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val onValidate: (Task) -> Unit = { newTask ->
+            intent.putExtra("task", newTask)
+            setResult(RESULT_OK, intent)
+            finish()
+        }
         setContent {
             TodoMargotJonathanTheme {
                 // A surface container using the 'background' color from the theme
@@ -30,7 +37,7 @@ class DetailActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Detail()
+                    Detail(onValidate)
                 }
             }
         }
@@ -38,7 +45,7 @@ class DetailActivity : ComponentActivity() {
 }
 
 @Composable
-fun Detail(modifier: Modifier = Modifier) {
+fun Detail(onValidate: (Task) -> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier = Modifier
             .padding(16.dp),
@@ -56,7 +63,11 @@ fun Detail(modifier: Modifier = Modifier) {
         Text(
             text = "description"
         )
-        Button(onClick = { /*TODO*/ }) {
+        Button(onClick = {
+            val newTask = Task(id = UUID.randomUUID().toString(), title = "New Task !")
+            onValidate(newTask)
+        })
+        {
             Text(text = "Save")
         }
     }
@@ -66,6 +77,6 @@ fun Detail(modifier: Modifier = Modifier) {
 @Composable
 fun DetailPreview() {
     TodoMargotJonathanTheme {
-        Detail()
+        Detail(onValidate = {})
     }
 }
