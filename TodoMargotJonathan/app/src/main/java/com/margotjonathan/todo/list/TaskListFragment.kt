@@ -1,5 +1,6 @@
 package com.margotjonathan.todo.list
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.margotjonathan.todo.R
 import com.margotjonathan.todo.databinding.FragmentTaskListBinding
+import com.margotjonathan.todo.detail.DetailActivity
 import java.util.UUID
 
 // TODO: Rename parameter arguments, choose names that match
@@ -56,6 +58,8 @@ class TaskListFragment : Fragment() {
             val newTask = Task(id = UUID.randomUUID().toString(), title = "Task ${taskList.size + 1}")
             taskList = taskList + newTask
             adapter.submitList(taskList)
+            val intent = Intent(context, DetailActivity::class.java)
+            startActivity(intent)
         }
 
         adapter.onClickDelete = { task ->
