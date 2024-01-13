@@ -19,20 +19,42 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
+import com.margotjonathan.todo.data.Api
+import com.margotjonathan.todo.data.UserWebService
 import com.margotjonathan.todo.user.ui.theme.TodoMargotJonathanTheme
+import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 
 class UserActivity : ComponentActivity() {
+    private fun Bitmap.toRequestBody(): MultipartBody.Part {
+        val tmpFile = File.createTempFile("avatar", "jpg")
+        tmpFile.outputStream().use { // *use*: open et close automatiquement
+            this.compress(Bitmap.CompressFormat.JPEG, 100, it) // *this* est le bitmap ici
+        }
+        return MultipartBody.Part.createFormData(
+            name = "avatar",
+            filename = "avatar.jpg",
+            body = tmpFile.readBytes().toRequestBody()
+        )
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             var bitmap: Bitmap? by remember { mutableStateOf(null) }
             var uri: Uri? by remember { mutableStateOf(null) }
+            val composeScope = rememberCoroutineScope()
             val takePicture = rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) {
                 bitmap = it
+                composeScope.launch {
+                    Api.userWebService.updateAvatar(bitmap?.toRequestBody())
+                }
             }
             Column {
                 AsyncImage(
@@ -42,7 +64,7 @@ class UserActivity : ComponentActivity() {
                 )
                 Button(
                     onClick = {
-                              takePicture.launch()
+                        takePicture.launch()
                     },
                     content = { Text("Take picture") }
                 )
@@ -56,7 +78,7 @@ class UserActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun User(name: String, modifier: Modifier = Modifier) {
     Text(
         text = "Hello $name!",
         modifier = modifier
@@ -65,8 +87,8 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun UserPreview() {
     TodoMargotJonathanTheme {
-        Greeting("Android")
+        User("Android")
     }
 }

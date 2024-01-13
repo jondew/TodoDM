@@ -142,11 +142,13 @@ class TaskListFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         val imageView = view?.findViewById<ImageView>(R.id.user_image_view)
-        imageView?.load("https://goo.gl/gEgYUd")
         val userTextView = view?.findViewById<TextView>(R.id.user_text_view)
         lifecycleScope.launch {
             val user = Api.userWebService.fetchUser().body()!!
             userTextView?.text = user.name
+            imageView?.load(user.avatar) {
+                error(R.drawable.ic_launcher_background)
+            }
         }
         viewModel.refresh()
     }
