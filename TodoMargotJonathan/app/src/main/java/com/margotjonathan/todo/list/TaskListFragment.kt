@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -13,6 +14,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.margotjonathan.todo.R
 import com.margotjonathan.todo.data.Api
@@ -132,6 +134,8 @@ class TaskListFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        val imageView = view?.findViewById<ImageView>(R.id.user_image_view)
+        imageView?.load("https://goo.gl/gEgYUd")
         val userTextView = view?.findViewById<TextView>(R.id.user_text_view)
         lifecycleScope.launch {
             val user = Api.userWebService.fetchUser().body()!!
