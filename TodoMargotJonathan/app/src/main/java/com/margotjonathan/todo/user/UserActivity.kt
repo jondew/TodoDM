@@ -4,7 +4,10 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,6 +31,9 @@ class UserActivity : ComponentActivity() {
         setContent {
             var bitmap: Bitmap? by remember { mutableStateOf(null) }
             var uri: Uri? by remember { mutableStateOf(null) }
+            val takePicture = rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) {
+                bitmap = it
+            }
             Column {
                 AsyncImage(
                     modifier = Modifier.fillMaxHeight(.2f),
@@ -35,7 +41,9 @@ class UserActivity : ComponentActivity() {
                     contentDescription = null
                 )
                 Button(
-                    onClick = {},
+                    onClick = {
+                              takePicture.launch()
+                    },
                     content = { Text("Take picture") }
                 )
                 Button(
