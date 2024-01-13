@@ -9,12 +9,14 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.margotjonathan.todo.R
 import com.margotjonathan.todo.data.Api
+import com.margotjonathan.todo.data.TasksListViewModel
 import com.margotjonathan.todo.databinding.FragmentTaskListBinding
 import com.margotjonathan.todo.detail.DetailActivity
 import kotlinx.coroutines.launch
@@ -75,6 +77,7 @@ class TaskListFragment : Fragment() {
             adapter.submitList(taskList)
         }
     }
+    private val viewModel: TasksListViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,6 +117,18 @@ class TaskListFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        lifecycleScope.launch { // on lance une coroutine car `collect` est `suspend`
+            viewModel.tasksStateFlow.collect { newList ->
+                // cette lambda est exécutée à chaque fois que la liste est mise à jour dans le VM
+                // -> ici, on met à jour la liste dans l'adapter
+                taskList = newList
+                adapter.submitList(taskList)
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         val userTextView = view?.findViewById<TextView>(R.id.user_text_view)
@@ -121,6 +136,7 @@ class TaskListFragment : Fragment() {
             val user = Api.userWebService.fetchUser().body()!!
             userTextView?.text = user.name
         }
+        viewModel.refresh()
     }
 
     companion object {
