@@ -6,14 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.margotjonathan.todo.R
+import com.margotjonathan.todo.data.Api
 import com.margotjonathan.todo.databinding.FragmentTaskListBinding
 import com.margotjonathan.todo.detail.DetailActivity
+import kotlinx.coroutines.launch
 import java.util.UUID
 import kotlin.reflect.typeOf
 
@@ -108,6 +112,15 @@ class TaskListFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val userTextView = view?.findViewById<TextView>(R.id.user_text_view)
+        lifecycleScope.launch {
+            val user = Api.userWebService.fetchUser().body()!!
+            userTextView?.text = user.name
+        }
     }
 
     companion object {
