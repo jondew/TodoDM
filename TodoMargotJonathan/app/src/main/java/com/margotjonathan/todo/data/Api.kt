@@ -9,7 +9,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.JsonObject
 import okhttp3.MediaType.Companion.toMediaType
 object Api {
-    private const val TOKEN = "VOTRE_CLE_API_ICI" //TODO: A remplacer avant de tester
+    private const val TOKEN = "COPIEZ_VOTRE_CLE_API_ICI" //TODO: A remplacer avant de tester
 
     private val retrofit by lazy {
         // client HTTP

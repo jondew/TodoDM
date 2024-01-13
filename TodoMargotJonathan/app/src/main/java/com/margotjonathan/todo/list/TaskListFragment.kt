@@ -35,15 +35,17 @@ private const val ARG_PARAM2 = "adapter"
  */
 class TaskListFragment : Fragment() {
     // TODO: Rename and change types of parameters
+    /*
     private var taskList = listOf(
         Task(id = "id_1", title = "Task 1", description = "description 1"),
         Task(id = "id_2", title = "Task 2"),
         Task(id = "id_3", title = "Task 3")
     )
+    */
+    private val viewModel: TasksListViewModel by viewModels()
     private val adapterListener : TaskListListener = object : TaskListListener {
         override fun onClickDelete(task: Task) {
-            taskList = taskList - task
-            adapter.submitList(taskList)
+            viewModel.remove(task)
         }
         override fun onClickEdit(task: Task) {
             val intent = Intent(context, DetailActivity::class.java)
@@ -66,18 +68,15 @@ class TaskListFragment : Fragment() {
         // dans cette callback on récupèrera la task et on l'ajoutera à la liste
         val task = result.data?.getSerializableExtra("task") as Task?
         if (task != null) {
-            taskList = taskList + task
-            adapter.submitList(taskList)
+            viewModel.add(task)
         }
     }
     private val editTask = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         val task = result.data?.getSerializableExtra("task") as Task?
         if (task != null) {
-            taskList = taskList.map { if (it.id == task.id) task else it }
-            adapter.submitList(taskList)
+            viewModel.edit(task)
         }
     }
-    private val viewModel: TasksListViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,10 +86,12 @@ class TaskListFragment : Fragment() {
         }*/
     }
 
+    /*
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putSerializable("taskList", ArrayList(taskList))
+        outState.putSerializable("taskList", ArrayList(viewModel.tasksStateFlow.value))
     }
+     */
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -101,7 +102,6 @@ class TaskListFragment : Fragment() {
         val recyclerView = binding.taskRecyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
-        adapter.submitList(taskList)
 
         val addTaskButton = binding.addTaskButton
         addTaskButton.setOnClickListener {
@@ -109,10 +109,12 @@ class TaskListFragment : Fragment() {
             createTask.launch(intent)
         }
 
+        /*
         if (savedInstanceState != null && savedInstanceState.containsKey("taskList")){
             taskList = savedInstanceState.getSerializable("taskList") as ArrayList<Task>
             adapter.submitList(taskList)
         }
+        */
 
         return binding.root
     }
@@ -123,8 +125,7 @@ class TaskListFragment : Fragment() {
             viewModel.tasksStateFlow.collect { newList ->
                 // cette lambda est exécutée à chaque fois que la liste est mise à jour dans le VM
                 // -> ici, on met à jour la liste dans l'adapter
-                taskList = newList
-                adapter.submitList(taskList)
+                adapter.submitList(newList)
             }
         }
     }

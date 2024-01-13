@@ -69,7 +69,7 @@ fun Detail(initialTask: Task?, onValidate: (Task) -> Unit, modifier: Modifier = 
             modifier = modifier,
             style = MaterialTheme.typography.headlineLarge
         )
-        val newTask = Task(id = UUID.randomUUID().toString(), title = "", description = "")
+        val newTask = Task(id = "", title = "", description = "")
         var task by remember { mutableStateOf(initialTask ?: newTask) }
         OutlinedTextField(
             value = task.title,
