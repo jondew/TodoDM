@@ -21,6 +21,7 @@ import com.margotjonathan.todo.data.Api
 import com.margotjonathan.todo.data.TasksListViewModel
 import com.margotjonathan.todo.databinding.FragmentTaskListBinding
 import com.margotjonathan.todo.detail.DetailActivity
+import com.margotjonathan.todo.user.UserActivity
 import kotlinx.coroutines.launch
 import java.util.UUID
 import kotlin.reflect.typeOf
@@ -109,6 +110,12 @@ class TaskListFragment : Fragment() {
         addTaskButton.setOnClickListener {
             val intent = Intent(context, DetailActivity::class.java)
             createTask.launch(intent)
+        }
+
+        val userImageView = binding.userImageView
+        userImageView.setOnClickListener {
+            val intent = Intent(context, UserActivity::class.java)
+            startActivity(intent)
         }
 
         /*
