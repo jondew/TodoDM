@@ -7,13 +7,30 @@
     android:layout_height="match_parent"
     tools:context=".list.TaskListFragment">
 
+    <ImageView
+        android:id="@+id/user_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/user_text_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/user_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/user_image_view"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/task_recycler_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/user_text_view" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_task_button"
