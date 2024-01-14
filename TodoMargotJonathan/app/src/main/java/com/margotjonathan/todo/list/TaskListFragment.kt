@@ -78,13 +78,20 @@ class TaskListFragment : Fragment() {
     private val captureUri by lazy {
         requireContext().contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ContentValues())
     }
-    private val takePicture = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+    /*private val takePicture = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success) {
             // Utilisez l'URI capturée dans votre logique
             val uri: Uri? = captureUri
             // ... (faites quelque chose avec l'URI, par exemple, lancez une activité de détails avec cette image)
         }
-    }
+    }*/
+    /*private val pickPhoto = registerForActivityResult(ActivityResultContracts.PickVisualMedia()){ success ->
+        if (success) {
+            // Utilisez l'URI capturée dans votre logique
+            val uri: Uri? = captureUri
+            // ... (faites quelque chose avec l'URI, par exemple, lancez une activité de détails avec cette image)
+        }
+    }*/
     private val createTask = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         // dans cette callback on récupèrera la task et on l'ajoutera à la liste
         val task = result.data?.getSerializableExtra("task") as Task?
@@ -136,30 +143,8 @@ class TaskListFragment : Fragment() {
 
         val addTaskButton = binding.addTaskButton
         addTaskButton.setOnClickListener {
-            // Ajoutez cette vérification de permission avant de lancer l'activité de capture d'image
-            if (ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.CAMERA
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                // Créer un fichier pour stocker l'image capturée
-                val values = ContentValues().apply {
-                    put(MediaStore.Images.Media.TITLE, "TaskImage")
-                    put(MediaStore.Images.Media.DESCRIPTION, "Image for task")
-                }
-                val capturedImageUri = requireContext().contentResolver.insert(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                    values
-                )
-
-                // Lancer l'activité de capture d'image
-                capturedImageUri?.let { uri ->
-                    takePicture.launch(uri)
-                }
-            } else {
-                // Demandez la permission si elle n'est pas accordée
-                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
-            }
+            val intent = Intent(context, DetailActivity::class.java)
+            createTask.launch(intent)
         }
 
         val userImageView = binding.userImageView
@@ -178,7 +163,7 @@ class TaskListFragment : Fragment() {
         return binding.root
     }
 
-    private val requestCameraPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted: Boolean ->
+    /*private val requestCameraPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted: Boolean ->
         if(isGranted){
             //La permission de la caméra a été accordée, on lance le contrat TakePicture
             takePicture.launch(captureUri)
@@ -186,7 +171,7 @@ class TaskListFragment : Fragment() {
             //La permission de la caméra a été refusée
             // ...
         }
-    }
+    }*/
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lifecycleScope.launch { // on lance une coroutine car `collect` est `suspend`

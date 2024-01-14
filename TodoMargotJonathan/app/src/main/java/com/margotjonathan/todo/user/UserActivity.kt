@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
 import androidx.compose.foundation.layout.Column
@@ -65,6 +66,14 @@ class UserActivity : ComponentActivity() {
                     Api.userWebService.updateAvatar(bitmap?.toRequestBody())
                 }
             }
+            val pickPhoto = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {uri ->
+                if(uri != null) {
+                    composeScope.launch {
+                        Api.userWebService.updateAvatar(uri?.toRequestBody())
+                    }
+                }
+
+            }
             Column {
                 AsyncImage(
                     modifier = Modifier.fillMaxHeight(.2f),
@@ -78,7 +87,9 @@ class UserActivity : ComponentActivity() {
                     content = { Text("Take picture") }
                 )
                 Button(
-                    onClick = {},
+                    onClick = {
+                        pickPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                    },
                     content = { Text("Pick photo") }
                 )
             }
