@@ -25,6 +25,9 @@ import com.margotjonathan.todo.user.UserActivity
 import kotlinx.coroutines.launch
 import java.util.UUID
 import kotlin.reflect.typeOf
+import android.Manifest
+import androidx.core.content.ContextCompat
+import android.content.pm.PackageManager
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -81,6 +84,16 @@ class TaskListFragment : Fragment() {
         }
     }
 
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                // La permission a été accordée, vous pouvez maintenant accéder au stockage externe
+                // ... Ajoutez votre logique pour sélectionner une image ici ...
+            } else {
+                // La permission a été refusée
+                // ... Ajoutez votre logique pour gérer le refus ici ...
+            }
+        }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         /*arguments?.let {
@@ -108,8 +121,19 @@ class TaskListFragment : Fragment() {
 
         val addTaskButton = binding.addTaskButton
         addTaskButton.setOnClickListener {
-            val intent = Intent(context, DetailActivity::class.java)
-            createTask.launch(intent)
+            // Ajoutez cette vérification de permission avant de lancer l'activité de sélection d'image
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                val intent = Intent(Intent.ACTION_PICK)
+                intent.type = "image/*"
+                createTask.launch(intent)
+            } else {
+                // Demandez la permission si elle n'est pas accordée
+                requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+            }
         }
 
         val userImageView = binding.userImageView
