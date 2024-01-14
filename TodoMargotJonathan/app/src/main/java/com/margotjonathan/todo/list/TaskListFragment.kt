@@ -28,6 +28,11 @@ import kotlin.reflect.typeOf
 import android.Manifest
 import androidx.core.content.ContextCompat
 import android.content.pm.PackageManager
+import android.content.ContentValues
+import android.net.Uri
+import android.provider.MediaStore
+import android.util.Log
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -70,6 +75,16 @@ class TaskListFragment : Fragment() {
         }
     }
     private val adapter = TaskListAdapter(adapterListener)
+    private val captureUri by lazy {
+        requireContext().contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ContentValues())
+    }
+    private val takePicture = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+        if (success) {
+            // Utilisez l'URI capturée dans votre logique
+            val uri: Uri? = captureUri
+            // ... (faites quelque chose avec l'URI, par exemple, lancez une activité de détails avec cette image)
+        }
+    }
     private val createTask = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         // dans cette callback on récupèrera la task et on l'ajoutera à la liste
         val task = result.data?.getSerializableExtra("task") as Task?
@@ -121,18 +136,29 @@ class TaskListFragment : Fragment() {
 
         val addTaskButton = binding.addTaskButton
         addTaskButton.setOnClickListener {
-            // Ajoutez cette vérification de permission avant de lancer l'activité de sélection d'image
+            // Ajoutez cette vérification de permission avant de lancer l'activité de capture d'image
             if (ContextCompat.checkSelfPermission(
                     requireContext(),
-                    Manifest.permission.READ_EXTERNAL_STORAGE
+                    Manifest.permission.CAMERA
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
-                val intent = Intent(Intent.ACTION_PICK)
-                intent.type = "image/*"
-                createTask.launch(intent)
+                // Créer un fichier pour stocker l'image capturée
+                val values = ContentValues().apply {
+                    put(MediaStore.Images.Media.TITLE, "TaskImage")
+                    put(MediaStore.Images.Media.DESCRIPTION, "Image for task")
+                }
+                val capturedImageUri = requireContext().contentResolver.insert(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    values
+                )
+
+                // Lancer l'activité de capture d'image
+                capturedImageUri?.let { uri ->
+                    takePicture.launch(uri)
+                }
             } else {
                 // Demandez la permission si elle n'est pas accordée
-                requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
             }
         }
 
@@ -152,6 +178,15 @@ class TaskListFragment : Fragment() {
         return binding.root
     }
 
+    private val requestCameraPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted: Boolean ->
+        if(isGranted){
+            //La permission de la caméra a été accordée, on lance le contrat TakePicture
+            takePicture.launch(captureUri)
+        } else{
+            //La permission de la caméra a été refusée
+            // ...
+        }
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         lifecycleScope.launch { // on lance une coroutine car `collect` est `suspend`
@@ -168,10 +203,29 @@ class TaskListFragment : Fragment() {
         val imageView = view?.findViewById<ImageView>(R.id.user_image_view)
         val userTextView = view?.findViewById<TextView>(R.id.user_text_view)
         lifecycleScope.launch {
-            val user = Api.userWebService.fetchUser().body()!!
-            userTextView?.text = user.name
-            imageView?.load(user.avatar) {
-                error(R.drawable.ic_launcher_background)
+            try {
+                val response = Api.userWebService.fetchUser()
+
+                if (response.isSuccessful) {
+                    val user = response.body()
+                    if (user != null) {
+                        userTextView?.text = user.name
+                        imageView?.load(user.avatar) {
+                            error(R.drawable.ic_launcher_background)
+                        }
+                    } else {
+                        // Gérer le cas où le corps de la réponse est null
+                        // Peut-être afficher un message d'erreur ou prendre une action appropriée
+                    }
+                } else {
+                    // Gérer le cas où la réponse n'est pas réussie
+                    // Peut-être afficher un message d'erreur ou prendre une action appropriée
+                }
+            } catch (e: Exception) {
+                // Gérer les erreurs lors de l'appel réseau
+                Log.e("API_CALL", "Error during API call: ${e.message}")
+                e.printStackTrace()
+                // Peut-être afficher un message d'erreur ou prendre une action appropriée
             }
         }
         viewModel.refresh()
