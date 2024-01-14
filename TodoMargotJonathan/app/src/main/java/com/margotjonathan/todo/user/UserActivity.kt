@@ -44,6 +44,15 @@ class UserActivity : ComponentActivity() {
             body = tmpFile.readBytes().toRequestBody()
         )
     }
+    private fun Uri.toRequestBody(): MultipartBody.Part {
+        val fileInputStream = contentResolver.openInputStream(this)!!
+        val fileBody = fileInputStream.readBytes().toRequestBody()
+        return MultipartBody.Part.createFormData(
+            name = "avatar",
+            filename = "avatar.jpg",
+            body = fileBody
+        )
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
